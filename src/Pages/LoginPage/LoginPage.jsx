@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Helmet } from "react-helmet";
-import isValidEmail from "../../utils/IsValidEmail";
 import images from "../../assets/images/image";
 import capitalizeFirstLetter from "../../utils/CapitalizeFirstLetter";
 import { FcGoogle } from "react-icons/fc";
+import validateEmail from "../../utils/IsValidEmail";
 
 const TITLE = 'Login Page';
 
@@ -11,6 +11,7 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [rememberMe, setRememberMe] = useState(false);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -21,14 +22,18 @@ const LoginPage = () => {
             return;
         }
 
-        if (isValidEmail(email)) {
+        if (!validateEmail(email)) {
             setError('Email không hợp lệ');
             alert('Email không hợp lệ')
             return;
         }
 
         if (email === 'user@example.com' && password === 'password123') {
-            alert('Đăng nhập thành công!');
+            if(rememberMe){
+                alert('Đăng nhập thành công và token giữ trong 30 ngày!');
+            } else{
+                alert('Đăng nhập thành công!');
+            }
             setError('');
         } else {
             setError('Email hoặc mật khẩu không đúng.');
@@ -45,6 +50,14 @@ const LoginPage = () => {
 
     const handleGoogleSignIn = () => {
         alert(`Not don't yet!`);
+    }
+
+    const handleForgotPassword = () => {
+        alert(`Not don't yet!`);
+    }
+
+    const toggleRememberMe = () => {
+        setRememberMe(!rememberMe);
     }
 
     error && console.error('Error:', error);
@@ -93,6 +106,19 @@ const LoginPage = () => {
                         htmlFor="floating_filled_password" 
                         className="absolute text-sm text-primary duration-300 transform -translate-y-4 scale-75 top-4 z-10 origin-[0] start-2.5 peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4 rtl:peer-focus:translate-x-1/4 rtl:peer-focus:left-auto peer-focus:text-accent"
                         >Password</label>
+                        </div>
+                        <div className="w-full flex justify-between">
+                            <div className="flex items-center">
+                                <input id="checkbox" 
+                                    className="w-4 h-4 mr-2" 
+                                    type="checkbox" 
+                                    checked={rememberMe}
+                                    onChange={toggleRememberMe}/>
+                                <span id="checkbox" className="text-sm">Remember me for 30 days</span>
+                            </div>
+                            <div onClick={() => {handleForgotPassword()}}
+                            className="hover:scale-105 text-sm transform transition ease-in-out duration-300 hover:font-medium underline decoration-dotted underline-offset-2 cursor-pointer"
+                            >{capitalizeFirstLetter('forgot password ?')}</div>
                         </div>
                         <button type="submit"
                         className="hover:scale-105 transform transition ease-in-out w-full bg-btnPrimary text-secondary py-3 font-semibold rounded-md hover:bg-buttonPrimaryHover focus:bg-button focus:outline-none duration-300"
